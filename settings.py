@@ -8,3 +8,4 @@ class Settings:
         self.screen_height = 600
         self.bg_color = (0, 0, 0)
         self.screen_size = self.screen_width, self.screen_height
+        self.ship_speed = 8.5
