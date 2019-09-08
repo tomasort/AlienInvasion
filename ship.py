@@ -19,6 +19,9 @@ class Ship:
         self.moving_down = False
         self.settings = ai_game.settings
 
+    def center_ship(self):
+        self.rect.midbottom = self.screen_rect.midbottom
+
     def update(self):
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.rect.x += self.settings.ship_speed
