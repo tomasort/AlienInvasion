@@ -15,6 +15,8 @@ class Ship:
         self.rect.midbottom = self.screen_rect.midbottom 
         self.moving_right = False
         self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
         self.settings = ai_game.settings
 
     def update(self):
@@ -22,6 +24,10 @@ class Ship:
             self.rect.x += self.settings.ship_speed
         if self.moving_left and self.rect.left > 0:
             self.rect.x -= self.settings.ship_speed
+        if self.moving_up:
+            self.rect.y -= self.settings.ship_speed
+        if self.moving_down:
+            self.rect.y += self.settings.ship_speed
 
     def blitme(self):
         """ Draw the ship at its current location"""
