@@ -51,12 +51,23 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
-        
+
+    def _check_fleet_edges(self):
+        """Respond appropriately if any aliens have reached an edge."""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+    
+    def _change_fleet_direction(self):
+        """Drop the entire fleet and change the fleet's direction."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.alien_drop_speed
+        self.settings.alien_direction *= -1
 
     def fire_bullet(self):
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
-
 
     def _check_keydown_events(self, event):
         """Respond to keypresses"""
@@ -102,6 +113,11 @@ class AlienInvasion:
             bullet.draw_bullet() 
         self.aliens.draw(self.screen)
         pygame.display.flip()
+
+    def _update_aliens(self):
+        """Update the position of the aliens"""
+        self._check_fleet_edges()
+        self.aliens.update()
     
     def _update_bullets(self):
         self.bullets.update()
@@ -115,6 +131,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
 if __name__ == '__main__':
