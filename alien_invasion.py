@@ -7,6 +7,7 @@ from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from button import Button 
 
 class AlienInvasion:
     """Oveall class to manage game assets and behavior."""
@@ -24,6 +25,7 @@ class AlienInvasion:
         # Create an instance to store game statistics. 
         self.stats = GameStats(self) 
         self.ship = Ship(self)
+        self.play_button = Button(self, 'Play')
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
@@ -101,14 +103,32 @@ class AlienInvasion:
             self.ship.moving_down = False
 
     def _check_events(self):
-            """ Respond to keypresses and mouse events."""
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                elif event.type == pygame.KEYDOWN:
-                    self._check_keydown_events(event)
-                elif event.type == pygame.KEYUP:
-                    self._check_keyup_events(event)
+        """ Respond to keypresses and mouse events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+    
+    def _check_play_button(self, mouse_pos):
+        """Checks if the play button has been pressed"""
+        if self.play_button.rect.collidepoint(mouse_pos) and not self.stats.game_active:
+            # Reset the game stats
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Remove existing aliens and bullets 
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Create a new fleet and then center the ship
+            self._create_fleet()
+            self.ship.center_ship()
 
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen."""
@@ -117,6 +137,8 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet() 
         self.aliens.draw(self.screen)
+        if not self.stats.game_active: 
+            self.play_button.draw_button() 
         pygame.display.flip()
 
     def _update_aliens(self):
