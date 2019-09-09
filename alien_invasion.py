@@ -71,6 +71,7 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.alien_drop_speed
         self.settings.alien_direction *= -1
+        print("The velocity of the aliens is {}".format(self.settings.alien_speed))
 
     def fire_bullet(self):
         new_bullet = Bullet(self)
@@ -118,7 +119,8 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos):
         """Checks if the play button has been pressed"""
         if self.play_button.rect.collidepoint(mouse_pos) and not self.stats.game_active:
-            # Reset the game stats
+            # Reset the game settings and stats
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
 
@@ -191,6 +193,7 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
         if not self.aliens: 
             self._create_fleet()
+            self.settings.increase_speed()
 
     def run_game(self):
         """Atart the main loop for the game."""
@@ -201,6 +204,8 @@ class AlienInvasion:
                 self._update_bullets()
                 self._update_aliens()
             self._update_screen()
+
+    #TODO: add buttons for changing the dificulty of the levels in the game. 
 
 if __name__ == '__main__':
     # Make a game instance, and run the game. 
